@@ -1,3 +1,4 @@
+
 version: '3'
 
 volumes:
@@ -14,7 +15,7 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
   backend:
-    build: ./backend/
+    image: nik325/kittygram_backend
     env_file: .env.example
     volumes:
       - static:/backend_static
@@ -22,13 +23,13 @@ services:
     depends_on:
       - db
   frontend:
+    image: nik325/kittygram_frontend
     env_file: .env.example
-    build: ./frontend/
     command: cp -r /app/build/. /static/
     volumes:
       - static:/static
   gateway:
-    build: ./nginx/
+    image: nik325/kittygram_gateway
     env_file: .env.example
     ports:
       - 9000:80
