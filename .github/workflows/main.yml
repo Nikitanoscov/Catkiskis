@@ -168,7 +168,7 @@ jobs:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER }}
         key: ${{ secrets.SSH_KEY }}
-        passphrase: ${{ secrets.SSH_PASSPHRASE }}е
+        passphrase: ${{ secrets.SSH_PASSPHRASE }}
         script: |
           cd kittygram
           # Выполняет pull образов с Docker Hub
