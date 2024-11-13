@@ -1,3 +1,5 @@
+[![Main Kittygram Workflow](https://github.com/Nikitanoscov/kittygram_final/actions/workflows/main.yml/badge.svg)](https://github.com/Nikitanoscov/kittygram_final/actions/workflows/main.yml)
+
 # kittygram
 
 **Сервис для размещения своих любимых котиков.**
