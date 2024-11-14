@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.9"]
+        python-version: ["3.9", "3.10"]
     services:
       postgres:
         image: postgres:13.10
@@ -149,7 +149,7 @@ jobs:
       - build_and_push_to_docker_hub
       - build_frontend_and_push_to_docker_hub
       - build_gateway_and_push_to_docker_hub
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main'
     steps:
     - name: Checkout repo
       uses: actions/checkout@v3
@@ -161,22 +161,19 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.SSH_PASSPHRASE }}
         source: "docker-compose.production.yml"
-        target: "kittygram_final"
+        target: "kittygram"
     - name: Executing remote ssh commands to deploy
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER }}
         key: ${{ secrets.SSH_KEY }}
-        passphrase: ${{ secrets.SSH_PASSPHRASE }}е
+        passphrase: ${{ secrets.SSH_PASSPHRASE }}
         script: |
           cd kittygram
-          # Выполняет pull образов с Docker Hub
           sudo docker compose -f docker-compose.production.yml pull
-          # Перезапускает все контейнеры в Docker Compose
           sudo docker compose -f docker-compose.production.yml down
           sudo docker compose -f docker-compose.production.yml up -d
-          # Выполняет миграции и сбор статики
           sudo docker compose -f docker-compose.production.yml exec backend python manage.py migrate
           sudo docker compose -f docker-compose.production.yml exec backend python manage.py collectstatic
           sudo docker compose -f docker-compose.production.yml exec backend cp -r /app/collected_static/. /backend_static/static/
@@ -190,4 +187,4 @@ jobs:
       with:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
-        message: ${{ github.actor }} успешно выполнил деплой. Commit - ${{ github.event.commits[0].message }} https://github.com/${{ github.repository }}/commit/${{ github.sha}} .
+        message: ${{ github.actor }} успешно выполнил деплой. Commit - ${{ github.event.head_commit.message }} https://github.com/${{ github.repository }}/commit/${{ github.sha }} .
